@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO Restaurant - Admin Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #dc2626;
+            --secondary-color: #059669;
+            --accent-color: #f59e0b;
+            --neutral-color: #374151;
+            --background-color: #f9fafb;
+            --surface-color: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: 280px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #b91c1c 100%);
+            color: white;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(100%);
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-right: 3px solid transparent;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-right-color: white;
+        }
+
+        .nav-link i {
+            font-size: 1.125rem;
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-wrapper {
+            margin-right: 280px;
+            min-height: 100vh;
+            transition: margin-right 0.3s ease;
+        }
+
+        .main-wrapper.expanded {
+            margin-right: 0;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--background-color);
+        }
+
+        /* Content */
+        .content {
+            padding: 2rem;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Cards */
+        .content-card {
+            background: var(--surface-color);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Statistics Cards */
+        .stat-card {
+            background: var(--surface-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.bg-primary { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .stat-icon.bg-success { background: linear-gradient(135deg, var(--secondary-color), #047857); }
+        .stat-icon.bg-warning { background: linear-gradient(135deg, var(--accent-color), #d97706); }
+        .stat-icon.bg-info { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        .stat-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .stat-content p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Tables */
+        .table {
+            margin: 0;
+        }
+
+        .table th {
+            background: var(--background-color);
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 1rem;
+        }
+
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-hover tbody tr:hover {
+            background: var(--background-color);
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 0.5rem;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: #b91c1c;
+            border-color: #b91c1c;
+        }
+
+        .btn-success {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-success:hover {
+            background: #047857;
+            border-color: #047857;
+        }
+
+        .btn-warning {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+            border-color: #d97706;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Forms */
+        .form-control,
+        .form-select {
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25);
+        }
+
+        /* Modals */
+        .modal-content {
+            border-radius: 1rem;
+            border: none;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--surface-color);
+            color: var(--text-secondary);
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Menu Item Cards */
+        .menu-item-card {
+            background: var(--surface-color);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-item-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .menu-item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: var(--background-color);
+        }
+
+        .menu-item-content {
+            padding: 1.5rem;
+        }
+
+        .menu-item-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .menu-item-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .menu-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-confirmed { background: #dbeafe; color: #1e40af; }
+        .status-preparing { background: #fed7aa; color: #c2410c; }
+        .status-ready { background: #d1fae5; color: #065f46; }
+        .status-served { background: #d1fae5; color: #065f46; }
+        .status-cancelled { background: #fee2e2; color: #dc2626; }
+
+        .status-available { background: #d1fae5; color: #065f46; }
+        .status-unavailable { background: #fee2e2; color: #dc2626; }
+
+        /* Language Toggle */
+        .language-toggle {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+        }
+
+        .btn-language {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-language:hover {
+            background: var(--background-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-right: 0;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .filters {
+                flex-wrap: wrap;
+            }
+
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Toggle -->
+    <div class="language-toggle">
+        <button class="btn btn-language" onclick="toggleLanguage()">
+            <i class="bi bi-translate"></i>
+            <span id="languageText">English</span>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="sidebar-title">
+                <i class="bi bi-crown"></i>
+                <span data-en="UNO Admin" data-ar="إدارة أونو">UNO Admin</span>
+            </h3>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                        <i class="bi bi-speedometer2"></i>
+                        <span data-en="Dashboard" data-ar="لوحة التحكم">لوحة التحكم</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#categories" class="nav-link" data-section="categories">
+                        <i class="bi bi-tags"></i>
+                        <span data-en="Categories" data-ar="الفئات">الفئات</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#menu-items" class="nav-link" data-section="menu-items">
+                        <i class="bi bi-cup-hot"></i>
+                        <span data-en="Menu Items" data-ar="عناصر القائمة">عناصر القائمة</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#quick-actions" class="nav-link" data-section="quick-actions">
+                        <i class="bi bi-lightning"></i>
+                        <span data-en="Quick Actions" data-ar="الإجراءات السريعة">الإجراءات السريعة</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#orders" class="nav-link" data-section="orders">
+                        <i class="bi bi-receipt"></i>
+                        <span data-en="Orders" data-ar="الطلبات">الطلبات</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#analytics" class="nav-link" data-section="analytics">
+                        <i class="bi bi-graph-up"></i>
+                        <span data-en="Analytics" data-ar="التحليلات">التحليلات</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#tables" class="nav-link" data-section="tables">
+                        <i class="bi bi-table"></i>
+                        <span data-en="Tables" data-ar="الطاولات">الطاولات</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#sessions" class="nav-link" data-section="sessions">
+                        <i class="bi bi-people"></i>
+                        <span data-en="Customer Sessions" data-ar="جلسات العملاء">جلسات العملاء</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-wrapper" id="mainWrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                
+                <h1 class="page-title" id="pageTitle" data-en="Dashboard" data-ar="لوحة التحكم">لوحة التحكم</h1>
+                
+                <div class="header-actions">
+                    <button class="btn btn-outline-primary me-2" onclick="refreshData()">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        <span data-en="Refresh" data-ar="تحديث">تحديث</span>
+                    </button>
+                    <a href="../" class="btn btn-outline-secondary">
+                        <i class="bi bi-house"></i>
+                        <span data-en="Home" data-ar="الرئيسية">الرئيسية</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active fade-in">
+                <div class="row">
+                    <!-- Statistics Cards -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary">
+                                <i class="bi bi-cup-hot"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="totalMenuItems">0</h3>
+                                <p class="stat-label" data-en="Menu Items" data-ar="عناصر القائمة">عناصر القائمة</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success">
+                                <i class="bi bi-receipt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="totalOrders">0</h3>
+                                <p class="stat-label" data-en="Total Orders" data-ar="إجمالي الطلبات">إجمالي الطلبات</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="totalRevenue">0 ر.س</h3>
+                                <p class="stat-label" data-en="Total Revenue" data-ar="إجمالي الإيرادات">إجمالي الإيرادات</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info">
+                                <i class="bi bi-tags"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="totalCategories">0</h3>
+                                <p class="stat-label" data-en="Categories" data-ar="الفئات">الفئات</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h4 class="card-title" data-en="Recent Orders" data-ar="الطلبات الأخيرة">الطلبات الأخيرة</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th data-en="Order ID" data-ar="رقم الطلب">رقم الطلب</th>
+                                                <th data-en="Table" data-ar="الطاولة">الطاولة</th>
+                                                <th data-en="Customer" data-ar="العميل">العميل</th>
+                                                <th data-en="Items" data-ar="العناصر">العناصر</th>
+                                                <th data-en="Total" data-ar="الإجمالي">الإجمالي</th>
+                                                <th data-en="Status" data-ar="الحالة">الحالة</th>
+                                                <th data-en="Time" data-ar="الوقت">الوقت</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recentOrdersTable">
+                                            <!-- Recent orders will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section id="categories-section" class="content-section">
+                <div class="section-header">
+                    <h2 data-en="Categories Management" data-ar="إدارة الفئات">إدارة الفئات</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
+                        <i class="bi bi-plus"></i>
+                        <span data-en="Add Category" data-ar="إضافة فئة">إضافة فئة</span>
+                    </button>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th data-en="Name (English)" data-ar="الاسم (إنجليزي)">الاسم (إنجليزي)</th>
+                                        <th data-en="Name (Arabic)" data-ar="الاسم (عربي)">الاسم (عربي)</th>
+                                        <th data-en="Display Order" data-ar="ترتيب العرض">ترتيب العرض</th>
+                                        <th data-en="Actions" data-ar="الإجراءات">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoriesTable">
+                                    <!-- Categories will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Menu Items Section -->
+            <section id="menu-items-section" class="content-section">
+                <div class="section-header">
+                    <h2 data-en="Menu Items Management" data-ar="إدارة عناصر القائمة">إدارة عناصر القائمة</h2>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="filters">
+                            <button class="filter-btn active" data-filter="all" data-en="All" data-ar="الكل">الكل</button>
+                            <button class="filter-btn" data-filter="available" data-en="Available" data-ar="متاح">متاح</button>
+                            <button class="filter-btn" data-filter="unavailable" data-en="Unavailable" data-ar="غير متاح">غير متاح</button>
+                            <select class="form-select" id="categoryFilter" style="width: auto;">
+                                <option value="" data-en="All Categories" data-ar="جميع الفئات">جميع الفئات</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#menuItemModal">
+                            <i class="bi bi-plus"></i>
+                            <span data-en="Add Menu Item" data-ar="إضافة عنصر قائمة">إضافة عنصر قائمة</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-body">
+                        <div class="row" id="menuItemsGrid">
+                            <!-- Menu items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions Section -->
+            <section id="quick-actions-section" class="content-section">
+                <div class="section-header">
+                    <h2 data-en="Quick Actions Management" data-ar="إدارة الإجراءات السريعة">إدارة الإجراءات السريعة</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quickActionModal">
+                        <i class="bi bi-plus"></i>
+                        <span data-en="Add Quick Action" data-ar="إضافة إجراء سريع">إضافة إجراء سريع</span>
+                    </button>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th data-en="Action (English)" data-ar="الإجراء (إنجليزي)">الإجراء (إنجليزي)</th>
+                                        <th data-en="Action (Arabic)" data-ar="الإجراء (عربي)">الإجراء (عربي)</th>
+                                        <th data-en="Display Order" data-ar="ترتيب العرض">ترتيب العرض</th>
+                                        <th data-en="Actions" data-ar="الإجراءات">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quickActionsTable">
+                                    <!-- Quick actions will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders-section" class="content-section">
+                <div class="section-header">
+                    <h2 data-en="Orders Management" data-ar="إدارة الطلبات">إدارة الطلبات</h2>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="filters">
+                            <button class="filter-btn active" data-filter="all" data-en="All" data-ar="الكل">الكل</button>
+                            <button class="filter-btn" data-filter="pending" data-en="Pending" data-ar="في الانتظار">في الانتظار</button>
+                            <button class="filter-btn" data-filter="preparing" data-en="Preparing" data-ar="قيد التحضير">قيد التحضير</button>
+                            <button class="filter-btn" data-filter="ready" data-en="Ready" data-ar="جاهز">جاهز</button>
+                            <button class="filter-btn" data-filter="served" data-en="Served" data-ar="تم التقديم">تم التقديم</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th data-en="Order #" data-ar="رقم الطلب">رقم الطلب</th>
+                                        <th data-en="Table" data-ar="الطاولة">الطاولة</th>
+                                        <th data-en="Customer" data-ar="العميل">العميل</th>
+                                        <th data-en="Items" data-ar="العناصر">العناصر</th>
+                                        <th data-en="Total" data-ar="الإجمالي">الإجمالي</th>
+                                        <th data-en="Status" data-ar="الحالة">الحالة</th>
+                                        <th data-en="Order Time" data-ar="وقت الطلب">وقت الطلب</th>
+                                        <th data-en="Actions" data-ar="الإجراءات">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ordersTable">
+                                    <!-- Orders will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics-section" class="content-section">
+                <div class="section-header">
+                    <h2 data-en="Analytics & Reports" data-ar="التحليلات والتقارير">التحليلات والتقارير</h2>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="date" class="form-control" id="startDate" style="width: auto;">
+                        <span data-en="to" data-ar="إلى">إلى</span>
+                        <input type="date" class="form-control" id="endDate" style="width: auto;">
+                        <button class="btn btn-primary" onclick="updateAnalytics()">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            <span data-en="Update" data-ar="تحديث">تحديث</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h5 class="card-title" data-en="Orders by Status" data-ar="الطلبات حسب الحالة">الطلبات حسب الحالة</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ordersChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6 mb-4">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h5 class="card-title" data-en="Revenue Trend" data-ar="اتجاه الإيرادات">اتجاه الإيرادات</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="revenueChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tables Section -->
+            <section id="tables-section" class="content-section">
+                <div class="section-header">
+                    <h2 data-en="Tables Management" data-ar="إدارة الطاولات">إدارة الطاولات</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tableModal">
+                        <i class="bi bi-plus"></i>
+                        <span data-en="Add Table" data-ar="إضافة طاولة">إضافة طاولة</span>
+                    </button>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th data-en="Table Number" data-ar="رقم الطاولة">رقم الطاولة</th>
+                                        <th data-en="Capacity" data-ar="السعة">السعة</th>
+                                        <th data-en="Location" data-ar="الموقع">الموقع</th>
+                                        <th data-en="Status" data-ar="الحالة">الحالة</th>
+                                        <th data-en="QR Code" data-ar="رمز QR">رمز QR</th>
+                                        <th data-en="Actions" data-ar="الإجراءات">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablesTable">
+                                    <!-- Tables will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Customer Sessions Section -->
+            <section id="sessions-section" class="content-section">
+                <div class="section-header">
+                    <h2 data-en="Customer Sessions" data-ar="جلسات العملاء">جلسات العملاء</h2>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="filters">
+                            <button class="filter-btn active" data-filter="all" data-en="All" data-ar="الكل">الكل</button>
+                            <button class="filter-btn" data-filter="active" data-en="Active" data-ar="نشط">نشط</button>
+                            <button class="filter-btn" data-filter="ended" data-en="Ended" data-ar="منتهي">منتهي</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th data-en="Session ID" data-ar="معرف الجلسة">معرف الجلسة</th>
+                                        <th data-en="Table" data-ar="الطاولة">الطاولة</th>
+                                        <th data-en="Customer Name" data-ar="اسم العميل">اسم العميل</th>
+                                        <th data-en="Start Time" data-ar="وقت البداية">وقت البداية</th>
+                                        <th data-en="End Time" data-ar="وقت النهاية">وقت النهاية</th>
+                                        <th data-en="Orders" data-ar="الطلبات">الطلبات</th>
+                                        <th data-en="Actions" data-ar="الإجراءات">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sessionsTable">
+                                    <!-- Sessions will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+    
+    <!-- Supabase Client -->
+    <script src="../supabase/client.js"></script>
+
+    <script>
+        // Global variables
+        let currentLanguage = Utils.getCurrentLanguage();
+        let currentSection = 'dashboard';
+        let categories = [];
+        let menuItems = [];
+        let quickActions = [];
+        let orders = [];
+        let tables = [];
+        let sessions = [];
+
+        // Initialize admin panel
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateLanguage();
+            setupNavigation();
+            setupSidebar();
+            await loadInitialData();
+            setupRealTimeSubscriptions();
+        });
+
+        // Language management
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[data-en][data-ar]');
+            elements.forEach(element => {
+                const text = currentLanguage === 'en' ? element.dataset.en : element.dataset.ar;
+                element.textContent = text;
+            });
+            
+            document.getElementById('languageText').textContent = currentLanguage === 'en' ? 'العربية' : 'English';
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLanguage;
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
+            Utils.setLanguage(currentLanguage);
+            updateLanguage();
+            
+            // Re-render current section
+            switch(currentSection) {
+                case 'dashboard':
+                    renderDashboard();
+                    break;
+                case 'categories':
+                    renderCategories();
+                    break;
+                case 'menu-items':
+                    renderMenuItems();
+                    break;
+                case 'quick-actions':
+                    renderQuickActions();
+                    break;
+                case 'orders':
+                    renderOrders();
+                    break;
+                case 'tables':
+                    renderTables();
+                    break;
+                case 'sessions':
+                    renderSessions();
+                    break;
+            }
+        }
+
+        // Navigation setup
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = link.dataset.section;
+                    showSection(section);
+                });
+            });
+        }
+
+        function showSection(sectionName) {
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+
+            // Update page title
+            const titles = {
+                'dashboard': { en: 'Dashboard', ar: 'لوحة التحكم' },
+                'categories': { en: 'Categories', ar: 'الفئات' },
+                'menu-items': { en: 'Menu Items', ar: 'عناصر القائمة' },
+                'quick-actions': { en: 'Quick Actions', ar: 'الإجراءات السريعة' },
+                'orders': { en: 'Orders', ar: 'الطلبات' },
+                'analytics': { en: 'Analytics', ar: 'التحليلات' },
+                'tables': { en: 'Tables', ar: 'الطاولات' },
+                'sessions': { en: 'Customer Sessions', ar: 'جلسات العملاء' }
+            };
+            
+            const title = titles[sectionName] ? titles[sectionName][currentLanguage] : sectionName;
+            document.getElementById('pageTitle').textContent = title;
+
+            // Show section
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${sectionName}-section`).classList.add('active');
+
+            currentSection = sectionName;
+
+            // Load section data
+            switch(sectionName) {
+                case 'dashboard':
+                    renderDashboard();
+                    break;
+                case 'categories':
+                    renderCategories();
+                    break;
+                case 'menu-items':
+                    renderMenuItems();
+                    break;
+                case 'quick-actions':
+                    renderQuickActions();
+                    break;
+                case 'orders':
+                    renderOrders();
+                    break;
+                case 'analytics':
+                    renderAnalytics();
+                    break;
+                case 'tables':
+                    renderTables();
+                    break;
+                case 'sessions':
+                    renderSessions();
+                    break;
+            }
+        }
+
+        // Sidebar setup
+        function setupSidebar() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainWrapper = document.getElementById('mainWrapper');
+
+            sidebarToggle.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('show');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    mainWrapper.classList.toggle('expanded');
+                }
+            });
+
+            // Close sidebar on mobile when clicking outside
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && 
+                    !sidebar.contains(e.target) && 
+                    !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        }
+
+        // Data loading
+        async function loadInitialData() {
+            try {
+                showLoading();
+                
+                // Load all data in parallel
+                const [categoriesData, menuItemsData, quickActionsData, ordersData, tablesData, sessionsData] = await Promise.all([
+                    supabaseClient.getCategories(),
+                    supabaseClient.getAllMenuItems(),
+                    supabaseClient.getQuickActions(),
+                    supabaseClient.getAllOrders(),
+                    supabaseClient.getTables(),
+                    supabaseClient.getAllCustomerSessions()
+                ]);
+
+                categories = categoriesData;
+                menuItems = menuItemsData;
+                quickActions = quickActionsData;
+                orders = ordersData;
+                tables = tablesData;
+                sessions = sessionsData;
+
+                // Render current section
+                renderDashboard();
+                
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Failed to load initial data:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? 'Failed to load admin data. Please refresh the page.' 
+                        : 'فشل في تحميل بيانات الإدارة. يرجى تحديث الصفحة.',
+                    'error'
+                );
+                hideLoading();
+            }
+        }
+
+        // Dashboard rendering
+        function renderDashboard() {
+            // Update statistics
+            document.getElementById('totalMenuItems').textContent = menuItems.length;
+            document.getElementById('totalOrders').textContent = orders.length;
+            document.getElementById('totalRevenue').textContent = Utils.formatCurrency(
+                orders.reduce((sum, order) => sum + (order.total_amount || 0), 0)
+            );
+            document.getElementById('totalCategories').textContent = categories.length;
+
+            // Render recent orders
+            renderRecentOrders();
+        }
+
+        function renderRecentOrders() {
+            const container = document.getElementById('recentOrdersTable');
+            const recentOrders = orders.slice(0, 10); // Show last 10 orders
+
+            if (recentOrders.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">
+                            <span data-en="No orders found" data-ar="لا توجد طلبات">${currentLanguage === 'en' ? 'No orders found' : 'لا توجد طلبات'}</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            container.innerHTML = recentOrders.map(order => `
+                <tr>
+                    <td>#${order.order_number || order.id}</td>
+                    <td>${order.restaurant_tables?.table_number || 'N/A'}</td>
+                    <td>${order.customer_sessions?.customer_name || (currentLanguage === 'en' ? 'Guest' : 'ضيف')}</td>
+                    <td>${order.order_items?.length || 0}</td>
+                    <td>${Utils.formatCurrency(order.total_amount || 0)}</td>
+                    <td><span class="status-badge status-${order.status}">${Utils.getLocalizedText(APP_CONFIG.orderStatuses[order.status])}</span></td>
+                    <td>${Utils.formatDateTime(order.created_at)}</td>
+                </tr>
+            `).join('');
+
+            updateLanguage();
+        }
+
+        // Categories rendering
+        function renderCategories() {
+            const container = document.getElementById('categoriesTable');
+            
+            if (categories.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">
+                            <span data-en="No categories found" data-ar="لا توجد فئات">${currentLanguage === 'en' ? 'No categories found' : 'لا توجد فئات'}</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            container.innerHTML = categories.map(category => `
+                <tr>
+                    <td>${category.name_en}</td>
+                    <td>${category.name_ar}</td>
+                    <td>${category.display_order}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editCategory('${category.id}')">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteCategory('${category.id}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Menu Items rendering
+        function renderMenuItems() {
+            const container = document.getElementById('menuItemsGrid');
+            
+            if (menuItems.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12">
+                        <div class="text-center text-muted py-5">
+                            <i class="bi bi-cup-hot display-4"></i>
+                            <p class="mt-2" data-en="No menu items found" data-ar="لا توجد عناصر قائمة">${currentLanguage === 'en' ? 'No menu items found' : 'لا توجد عناصر قائمة'}</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = menuItems.map(item => `
+                <div class="col-lg-4 col-md-6">
+                    <div class="menu-item-card">
+                        <img src="${item.image_url || '../assets/images/placeholder.jpg'}" alt="${Utils.getLocalizedText(item)}" class="menu-item-image">
+                        <div class="menu-item-content">
+                            <h5 class="menu-item-title">${Utils.getLocalizedText(item)}</h5>
+                            <p class="menu-item-description">${Utils.getLocalizedText(item, 'description')}</p>
+                            <div class="menu-item-price">${Utils.formatCurrency(item.item_prices?.[0]?.price || 0)}</div>
+                            <div class="mb-2">
+                                <span class="status-badge status-${item.is_available ? 'available' : 'unavailable'}">
+                                    ${item.is_available ? (currentLanguage === 'en' ? 'Available' : 'متاح') : (currentLanguage === 'en' ? 'Unavailable' : 'غير متاح')}
+                                </span>
+                            </div>
+                            <div class="menu-item-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="editMenuItem('${item.id}')">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteMenuItem('${item.id}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-${item.is_available ? 'warning' : 'success'}" onclick="toggleItemAvailability('${item.id}')">
+                                    <i class="bi bi-${item.is_available ? 'eye-slash' : 'eye'}"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            updateLanguage();
+        }
+
+        // Quick Actions rendering
+        function renderQuickActions() {
+            const container = document.getElementById('quickActionsTable');
+            
+            if (quickActions.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">
+                            <span data-en="No quick actions found" data-ar="لا توجد إجراءات سريعة">${currentLanguage === 'en' ? 'No quick actions found' : 'لا توجد إجراءات سريعة'}</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            container.innerHTML = quickActions.map(action => `
+                <tr>
+                    <td>${action.action_en}</td>
+                    <td>${action.action_ar}</td>
+                    <td>${action.display_order}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editQuickAction('${action.id}')">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteQuickAction('${action.id}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Orders rendering
+        function renderOrders() {
+            const container = document.getElementById('ordersTable');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            <span data-en="No orders found" data-ar="لا توجد طلبات">${currentLanguage === 'en' ? 'No orders found' : 'لا توجد طلبات'}</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => `
+                <tr>
+                    <td>#${order.order_number || order.id}</td>
+                    <td>${order.restaurant_tables?.table_number || 'N/A'}</td>
+                    <td>${order.customer_sessions?.customer_name || (currentLanguage === 'en' ? 'Guest' : 'ضيف')}</td>
+                    <td>${order.order_items?.length || 0}</td>
+                    <td>${Utils.formatCurrency(order.total_amount || 0)}</td>
+                    <td><span class="status-badge status-${order.status}">${Utils.getLocalizedText(APP_CONFIG.orderStatuses[order.status])}</span></td>
+                    <td>${Utils.formatDateTime(order.created_at)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="viewOrder('${order.id}')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder('${order.id}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateLanguage();
+        }
+
+        // Tables rendering
+        function renderTables() {
+            const container = document.getElementById('tablesTable');
+            
+            if (tables.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            <span data-en="No tables found" data-ar="لا توجد طاولات">${currentLanguage === 'en' ? 'No tables found' : 'لا توجد طاولات'}</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            container.innerHTML = tables.map(table => `
+                <tr>
+                    <td>${table.table_number}</td>
+                    <td>${table.capacity}</td>
+                    <td>${table.location_description || 'N/A'}</td>
+                    <td><span class="status-badge status-${table.status}">${Utils.getLocalizedText(APP_CONFIG.tableStatuses[table.status])}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="generateQRCode('${table.id}')">
+                            <i class="bi bi-qr-code"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editTable('${table.id}')">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteTable('${table.id}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateLanguage();
+        }
+
+        // Sessions rendering
+        function renderSessions() {
+            const container = document.getElementById('sessionsTable');
+            
+            if (sessions.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">
+                            <span data-en="No sessions found" data-ar="لا توجد جلسات">${currentLanguage === 'en' ? 'No sessions found' : 'لا توجد جلسات'}</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            container.innerHTML = sessions.map(session => `
+                <tr>
+                    <td>${session.id.substring(0, 8)}...</td>
+                    <td>${session.restaurant_tables?.table_number || 'N/A'}</td>
+                    <td>${session.customer_name || (currentLanguage === 'en' ? 'Guest' : 'ضيف')}</td>
+                    <td>${Utils.formatDateTime(session.created_at)}</td>
+                    <td>${session.ended_at ? Utils.formatDateTime(session.ended_at) : (currentLanguage === 'en' ? 'Active' : 'نشط')}</td>
+                    <td>${session.orders?.length || 0}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="viewSession('${session.id}')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        ${!session.ended_at ? `
+                            <button class="btn btn-sm btn-outline-warning" onclick="endSession('${session.id}')">
+                                <i class="bi bi-stop"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `).join('');
+
+            updateLanguage();
+        }
+
+        // Analytics rendering
+        function renderAnalytics() {
+            // This would implement Chart.js charts
+            // For now, just show placeholder
+            console.log('Analytics rendering not implemented yet');
+        }
+
+        // Action handlers (placeholder implementations)
+        function editCategory(id) { console.log('Edit category:', id); }
+        function deleteCategory(id) { console.log('Delete category:', id); }
+        function editMenuItem(id) { console.log('Edit menu item:', id); }
+        function deleteMenuItem(id) { console.log('Delete menu item:', id); }
+        function toggleItemAvailability(id) { console.log('Toggle availability:', id); }
+        function editQuickAction(id) { console.log('Edit quick action:', id); }
+        function deleteQuickAction(id) { console.log('Delete quick action:', id); }
+        function viewOrder(id) { console.log('View order:', id); }
+        function deleteOrder(id) { console.log('Delete order:', id); }
+        function editTable(id) { console.log('Edit table:', id); }
+        function deleteTable(id) { console.log('Delete table:', id); }
+        function generateQRCode(id) { console.log('Generate QR code for table:', id); }
+        function viewSession(id) { console.log('View session:', id); }
+        function endSession(id) { console.log('End session:', id); }
+
+        // Utility functions
+        function refreshData() {
+            loadInitialData();
+        }
+
+        function updateAnalytics() {
+            console.log('Update analytics');
+        }
+
+        function setupRealTimeSubscriptions() {
+            // Subscribe to real-time updates
+            // Implementation would go here
+        }
+
+        function showLoading() {
+            // Show loading state
+        }
+
+        function hideLoading() {
+            // Hide loading state
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,49 @@
+{
+  "name": "uno-qr-menu-system",
+  "version": "1.0.0",
+  "description": "A fully client-side QR Menu System for UNO Restaurant & Café using HTML, CSS, JavaScript, Bootstrap, and Supabase",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000",
+    "build": "echo 'No build process required for static site'",
+    "deploy": "echo 'Deploy to GitHub Pages via repository settings'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/uno-qr-menu-system.git"
+  },
+  "keywords": [
+    "restaurant",
+    "qr-menu",
+    "digital-menu",
+    "ordering-system",
+    "supabase",
+    "bootstrap",
+    "javascript",
+    "html5",
+    "css3",
+    "github-pages",
+    "cloudinary",
+    "bilingual",
+    "arabic",
+    "english",
+    "real-time",
+    "pos-system"
+  ],
+  "author": "UNO Restaurant & Café",
+  "license": "MIT",
+  "homepage": "https://your-username.github.io/uno-qr-menu-system",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
+}
+

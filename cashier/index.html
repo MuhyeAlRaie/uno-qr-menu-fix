@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO Restaurant - Cashier Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #dc2626;
+            --secondary-color: #059669;
+            --accent-color: #f59e0b;
+            --neutral-color: #374151;
+            --background-color: #f9fafb;
+            --surface-color: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #b91c1c 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .btn-header {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-header:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-card {
+            background: var(--surface-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            height: 100%;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .icon-orders { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+        .icon-tables { background: linear-gradient(135deg, var(--secondary-color), #047857); color: white; }
+        .icon-requests { background: linear-gradient(135deg, var(--accent-color), #d97706); color: white; }
+        .icon-analytics { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+
+        /* Orders Section */
+        .orders-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .order-item {
+            background: var(--background-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .order-item:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .order-number {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .order-time {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .order-table {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-confirmed { background: #dbeafe; color: #1e40af; }
+        .status-preparing { background: #fed7aa; color: #c2410c; }
+        .status-ready { background: #d1fae5; color: #065f46; }
+        .status-served { background: #d1fae5; color: #065f46; }
+        .status-cancelled { background: #fee2e2; color: #dc2626; }
+
+        .order-items {
+            margin-bottom: 1rem;
+        }
+
+        .order-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        .order-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            font-weight: 500;
+        }
+
+        .item-details {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .item-quantity {
+            background: var(--background-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-order-action {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn-confirm {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #047857;
+        }
+
+        .btn-preparing {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-preparing:hover {
+            background: #d97706;
+        }
+
+        .btn-ready {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-ready:hover {
+            background: #059669;
+        }
+
+        .btn-served {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-served:hover {
+            background: #4b5563;
+        }
+
+        .btn-cancel {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #b91c1c;
+        }
+
+        /* Tables Grid */
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .table-card {
+            background: var(--background-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .table-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .table-card.available {
+            border-color: var(--secondary-color);
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        }
+
+        .table-card.occupied {
+            border-color: var(--accent-color);
+            background: linear-gradient(135deg, #fffbeb, #fed7aa);
+        }
+
+        .table-card.reserved {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        }
+
+        .table-card.cleaning {
+            border-color: var(--text-secondary);
+            background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+        }
+
+        .table-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-status {
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-info {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .table-sessions {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .session-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
+            margin: 0.125rem;
+            display: inline-block;
+        }
+
+        /* Quick Requests */
+        .requests-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .request-item {
+            background: var(--background-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .request-item.priority-high {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        }
+
+        .request-item.priority-medium {
+            border-color: var(--accent-color);
+            background: linear-gradient(135deg, #fffbeb, #fed7aa);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .request-action {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .request-time {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .request-table {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .request-priority {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .priority-1 { background: #d1fae5; color: #065f46; }
+        .priority-2 { background: #dbeafe; color: #1e40af; }
+        .priority-3 { background: #fed7aa; color: #c2410c; }
+        .priority-4 { background: #fecaca; color: #dc2626; }
+        .priority-5 { background: #fee2e2; color: #991b1b; }
+
+        .request-notes {
+            margin: 0.75rem 0;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-request-action {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-acknowledge {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-acknowledge:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-complete {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-complete:hover {
+            background: #047857;
+        }
+
+        /* Analytics Cards */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .analytics-card {
+            background: var(--background-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .analytics-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .analytics-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .analytics-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .change-positive {
+            color: var(--secondary-color);
+        }
+
+        .change-negative {
+            color: var(--primary-color);
+        }
+
+        /* Notifications */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stat-item {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .tables-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .order-actions,
+            .request-actions {
+                flex-direction: column;
+            }
+
+            .btn-order-action,
+            .btn-request-action {
+                min-width: auto;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .new-item {
+            animation: highlight 3s ease-out;
+        }
+
+        @keyframes highlight {
+            0% {
+                background-color: #fef3c7;
+                transform: scale(1.02);
+            }
+            100% {
+                background-color: transparent;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <h1 class="header-title" data-en="Cashier Dashboard" data-ar="لوحة الكاشير">لوحة الكاشير</h1>
+                </div>
+                <div class="col-md-6">
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="todayOrders">0</span>
+                            <span class="stat-label" data-en="Today's Orders" data-ar="طلبات اليوم">طلبات اليوم</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="todayRevenue">0</span>
+                            <span class="stat-label" data-en="Today's Revenue" data-ar="إيرادات اليوم">إيرادات اليوم</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="activeTables">0</span>
+                            <span class="stat-label" data-en="Active Tables" data-ar="الطاولات النشطة">الطاولات النشطة</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="header-actions">
+                        <button class="btn btn-header" onclick="toggleLanguage()" title="تغيير اللغة">
+                            <i class="bi bi-translate"></i>
+                        </button>
+                        <button class="btn btn-header" onclick="refreshData()" title="تحديث البيانات">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                        <button class="btn btn-header" onclick="toggleSounds()" title="تبديل الأصوات" id="soundToggle">
+                            <i class="bi bi-volume-up"></i>
+                        </button>
+                        <a href="../" class="btn btn-header" title="الصفحة الرئيسية">
+                            <i class="bi bi-house"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container-fluid">
+            <div class="row g-4">
+                <!-- Orders Column -->
+                <div class="col-lg-4">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <div class="card-icon icon-orders">
+                                    <i class="bi bi-receipt"></i>
+                                </div>
+                                <span data-en="Active Orders" data-ar="الطلبات النشطة">الطلبات النشطة</span>
+                                <span class="notification-badge" id="ordersCount">0</span>
+                            </h2>
+                        </div>
+                        <div class="orders-container" id="ordersContainer">
+                            <!-- Orders will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tables Column -->
+                <div class="col-lg-4">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <div class="card-icon icon-tables">
+                                    <i class="bi bi-table"></i>
+                                </div>
+                                <span data-en="Table Status" data-ar="حالة الطاولات">حالة الطاولات</span>
+                            </h2>
+                        </div>
+                        <div class="tables-grid" id="tablesContainer">
+                            <!-- Tables will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Requests Column -->
+                <div class="col-lg-4">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <div class="card-icon icon-requests">
+                                    <i class="bi bi-bell"></i>
+                                </div>
+                                <span data-en="Service Requests" data-ar="طلبات الخدمة">طلبات الخدمة</span>
+                                <span class="notification-badge" id="requestsCount">0</span>
+                            </h2>
+                        </div>
+                        <div class="requests-container" id="requestsContainer">
+                            <!-- Requests will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Row -->
+            <div class="row g-4 mt-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <div class="card-icon icon-analytics">
+                                    <i class="bi bi-graph-up"></i>
+                                </div>
+                                <span data-en="Today's Analytics" data-ar="تحليلات اليوم">تحليلات اليوم</span>
+                            </h2>
+                        </div>
+                        <div class="analytics-grid" id="analyticsContainer">
+                            <!-- Analytics will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+    
+    <!-- Supabase Client -->
+    <script src="../supabase/client.js"></script>
+
+    <script>
+        // Global variables
+        let currentLanguage = Utils.getCurrentLanguage();
+        let orders = [];
+        let tables = [];
+        let quickActionRequests = [];
+        let analytics = {};
+        let soundsEnabled = localStorage.getItem('soundsEnabled') !== 'false';
+        let subscriptions = [];
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateLanguage();
+            await loadInitialData();
+            setupRealTimeSubscriptions();
+            setupPeriodicUpdates();
+            updateSoundToggle();
+        });
+
+        // Language management
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[data-en][data-ar]');
+            elements.forEach(element => {
+                const text = currentLanguage === 'en' ? element.dataset.en : element.dataset.ar;
+                element.textContent = text;
+            });
+            
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLanguage;
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
+            Utils.setLanguage(currentLanguage);
+            updateLanguage();
+            renderOrders();
+            renderTables();
+            renderQuickActionRequests();
+            renderAnalytics();
+        }
+
+        // Data loading
+        async function loadInitialData() {
+            try {
+                showLoading();
+                
+                // Load all data in parallel
+                const [ordersData, tablesData, requestsData] = await Promise.all([
+                    loadActiveOrders(),
+                    loadTables(),
+                    loadQuickActionRequests()
+                ]);
+
+                await loadAnalytics();
+                
+                // Render all components
+                renderOrders();
+                renderTables();
+                renderQuickActionRequests();
+                renderAnalytics();
+                updateHeaderStats();
+                
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Failed to load initial data:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? 'Failed to load dashboard data. Please refresh the page.' 
+                        : 'فشل في تحميل بيانات اللوحة. يرجى تحديث الصفحة.',
+                    'error'
+                );
+                hideLoading();
+            }
+        }
+
+        async function loadActiveOrders() {
+            try {
+                // Get orders from today that are not completed or cancelled
+                const today = new Date().toISOString().split('T')[0];
+                const { data, error } = await supabaseClient.getClient()
+                    .from('orders')
+                    .select(`
+                        *,
+                        customer_sessions (*),
+                        restaurant_tables (*),
+                        order_items (
+                            *,
+                            menu_items (*),
+                            item_prices (*)
+                        )
+                    `)
+                    .gte('created_at', today)
+                    .not('status', 'in', '(served,cancelled)')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                orders = data || [];
+                return orders;
+            } catch (error) {
+                console.error('Failed to load orders:', error);
+                return [];
+            }
+        }
+
+        async function loadTables() {
+            try {
+                tables = await supabaseClient.getTables();
+                
+                // Load active sessions for each table
+                for (let table of tables) {
+                    const sessions = await supabaseClient.getActiveSessionsForTable(table.id);
+                    table.activeSessions = sessions;
+                }
+                
+                return tables;
+            } catch (error) {
+                console.error('Failed to load tables:', error);
+                return [];
+            }
+        }
+
+        async function loadQuickActionRequests() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const { data, error } = await supabaseClient.getClient()
+                    .from('quick_action_requests')
+                    .select(`
+                        *,
+                        quick_actions (*),
+                        restaurant_tables (*),
+                        customer_sessions (*)
+                    `)
+                    .gte('created_at', today)
+                    .not('status', 'eq', 'completed')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                quickActionRequests = data || [];
+                return quickActionRequests;
+            } catch (error) {
+                console.error('Failed to load quick action requests:', error);
+                return [];
+            }
+        }
+
+        async function loadAnalytics() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                
+                // Get today's orders summary
+                const ordersData = await supabaseClient.getOrdersSummary(
+                    today + 'T00:00:00Z',
+                    today + 'T23:59:59Z'
+                );
+
+                // Calculate analytics
+                analytics = {
+                    totalOrders: ordersData.length,
+                    totalRevenue: ordersData.reduce((sum, order) => sum + (order.total_amount || 0), 0),
+                    averageOrderValue: ordersData.length > 0 
+                        ? ordersData.reduce((sum, order) => sum + (order.total_amount || 0), 0) / ordersData.length 
+                        : 0,
+                    pendingOrders: ordersData.filter(order => order.status === 'pending').length,
+                    preparingOrders: ordersData.filter(order => order.status === 'preparing').length,
+                    readyOrders: ordersData.filter(order => order.status === 'ready').length,
+                    activeTables: tables.filter(table => table.status === 'occupied').length,
+                    availableTables: tables.filter(table => table.status === 'available').length
+                };
+
+                return analytics;
+            } catch (error) {
+                console.error('Failed to load analytics:', error);
+                return {};
+            }
+        }
+
+        // Rendering functions
+        function renderOrders() {
+            const container = document.getElementById('ordersContainer');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox display-4 text-muted"></i>
+                        <p class="mt-2 text-muted" data-en="No active orders" data-ar="لا توجد طلبات نشطة">
+                            ${currentLanguage === 'en' ? 'No active orders' : 'لا توجد طلبات نشطة'}
+                        </p>
+                    </div>
+                `;
+                document.getElementById('ordersCount').textContent = '0';
+                return;
+            }
+
+            container.innerHTML = orders.map(order => {
+                const statusClass = `status-${order.status}`;
+                const statusText = Utils.getLocalizedText(APP_CONFIG.orderStatuses[order.status]);
+                const orderTime = Utils.formatDateTime(order.created_at, { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+
+                return `
+                    <div class="order-item fade-in" data-order-id="${order.id}">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-number">#${order.order_number}</div>
+                                <div class="order-time">${orderTime}</div>
+                            </div>
+                            <div>
+                                <span class="order-table">
+                                    ${currentLanguage === 'en' ? 'Table' : 'طاولة'} ${order.restaurant_tables?.table_number || 'N/A'}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-status ${statusClass}">
+                            ${statusText}
+                        </div>
+                        
+                        <div class="order-items">
+                            ${order.order_items.map(item => `
+                                <div class="order-item-row">
+                                    <div>
+                                        <div class="item-name">${Utils.getLocalizedText(item.menu_items)}</div>
+                                        <div class="item-details">${Utils.getLocalizedText(item.item_prices)}</div>
+                                        ${item.special_instructions ? `
+                                            <div class="item-details">
+                                                <i class="bi bi-chat-text"></i> ${item.special_instructions}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                    <div class="item-quantity">×${item.quantity}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="order-total">
+                            <span data-en="Total" data-ar="الإجمالي">${currentLanguage === 'en' ? 'Total' : 'الإجمالي'}</span>
+                            <span>${Utils.formatCurrency(order.total_amount || 0)}</span>
+                        </div>
+                        
+                        <div class="order-actions">
+                            ${getOrderActionButtons(order)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('ordersCount').textContent = orders.length;
+            updateLanguage();
+        }
+
+        function getOrderActionButtons(order) {
+            const buttons = [];
+            
+            switch (order.status) {
+                case 'pending':
+                    buttons.push(`
+                        <button class="btn btn-order-action btn-confirm" onclick="updateOrderStatus('${order.id}', 'confirmed')">
+                            <i class="bi bi-check-circle"></i>
+                            <span data-en="Confirm" data-ar="تأكيد">${currentLanguage === 'en' ? 'Confirm' : 'تأكيد'}</span>
+                        </button>
+                    `);
+                    buttons.push(`
+                        <button class="btn btn-order-action btn-cancel" onclick="updateOrderStatus('${order.id}', 'cancelled')">
+                            <i class="bi bi-x-circle"></i>
+                            <span data-en="Cancel" data-ar="إلغاء">${currentLanguage === 'en' ? 'Cancel' : 'إلغاء'}</span>
+                        </button>
+                    `);
+                    break;
+                    
+                case 'confirmed':
+                    buttons.push(`
+                        <button class="btn btn-order-action btn-preparing" onclick="updateOrderStatus('${order.id}', 'preparing')">
+                            <i class="bi bi-clock"></i>
+                            <span data-en="Start Preparing" data-ar="بدء التحضير">${currentLanguage === 'en' ? 'Start Preparing' : 'بدء التحضير'}</span>
+                        </button>
+                    `);
+                    break;
+                    
+                case 'preparing':
+                    buttons.push(`
+                        <button class="btn btn-order-action btn-ready" onclick="updateOrderStatus('${order.id}', 'ready')">
+                            <i class="bi bi-check2-circle"></i>
+                            <span data-en="Mark Ready" data-ar="جاهز">${currentLanguage === 'en' ? 'Mark Ready' : 'جاهز'}</span>
+                        </button>
+                    `);
+                    break;
+                    
+                case 'ready':
+                    buttons.push(`
+                        <button class="btn btn-order-action btn-served" onclick="updateOrderStatus('${order.id}', 'served')">
+                            <i class="bi bi-check-all"></i>
+                            <span data-en="Mark Served" data-ar="تم التقديم">${currentLanguage === 'en' ? 'Mark Served' : 'تم التقديم'}</span>
+                        </button>
+                    `);
+                    break;
+            }
+            
+            return buttons.join('');
+        }
+
+        function renderTables() {
+            const container = document.getElementById('tablesContainer');
+            
+            container.innerHTML = tables.map(table => {
+                const statusClass = table.status;
+                const statusText = Utils.getLocalizedText(APP_CONFIG.tableStatuses[table.status]);
+                
+                return `
+                    <div class="table-card ${statusClass}" onclick="selectTable('${table.id}')">
+                        <div class="table-number">${table.table_number}</div>
+                        <div class="table-status">${statusText}</div>
+                        <div class="table-info">
+                            <div>${currentLanguage === 'en' ? 'Capacity' : 'السعة'}: ${table.capacity}</div>
+                            ${table.location_description ? `
+                                <div>${table.location_description}</div>
+                            ` : ''}
+                        </div>
+                        ${table.activeSessions && table.activeSessions.length > 0 ? `
+                            <div class="table-sessions">
+                                ${table.activeSessions.map(session => `
+                                    <span class="session-badge">
+                                        ${session.customer_name || (currentLanguage === 'en' ? 'Guest' : 'ضيف')}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderQuickActionRequests() {
+            const container = document.getElementById('requestsContainer');
+            
+            if (quickActionRequests.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="bi bi-check-circle display-4 text-muted"></i>
+                        <p class="mt-2 text-muted" data-en="No pending requests" data-ar="لا توجد طلبات معلقة">
+                            ${currentLanguage === 'en' ? 'No pending requests' : 'لا توجد طلبات معلقة'}
+                        </p>
+                    </div>
+                `;
+                document.getElementById('requestsCount').textContent = '0';
+                return;
+            }
+
+            container.innerHTML = quickActionRequests.map(request => {
+                const priorityClass = `priority-${request.priority_level}`;
+                const requestTime = Utils.formatDateTime(request.created_at, { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+
+                return `
+                    <div class="request-item priority-${request.priority_level > 3 ? 'high' : request.priority_level > 1 ? 'medium' : 'low'}" 
+                         data-request-id="${request.id}">
+                        <div class="request-header">
+                            <div>
+                                <div class="request-action">${Utils.getLocalizedText(request.quick_actions)}</div>
+                                <div class="request-time">${requestTime}</div>
+                            </div>
+                            <div>
+                                <span class="request-table">
+                                    ${currentLanguage === 'en' ? 'Table' : 'طاولة'} ${request.restaurant_tables?.table_number || 'N/A'}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="request-priority ${priorityClass}">
+                            ${currentLanguage === 'en' ? 'Priority' : 'الأولوية'} ${request.priority_level}
+                        </div>
+                        
+                        ${request.additional_notes ? `
+                            <div class="request-notes">
+                                <i class="bi bi-chat-text"></i> ${request.additional_notes}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="request-actions">
+                            ${getRequestActionButtons(request)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('requestsCount').textContent = quickActionRequests.length;
+            updateLanguage();
+        }
+
+        function getRequestActionButtons(request) {
+            const buttons = [];
+            
+            switch (request.status) {
+                case 'pending':
+                    buttons.push(`
+                        <button class="btn btn-request-action btn-acknowledge" onclick="updateRequestStatus('${request.id}', 'acknowledged')">
+                            <i class="bi bi-eye"></i>
+                            <span data-en="Acknowledge" data-ar="استلام">${currentLanguage === 'en' ? 'Acknowledge' : 'استلام'}</span>
+                        </button>
+                    `);
+                    buttons.push(`
+                        <button class="btn btn-request-action btn-complete" onclick="updateRequestStatus('${request.id}', 'completed')">
+                            <i class="bi bi-check-circle"></i>
+                            <span data-en="Complete" data-ar="إكمال">${currentLanguage === 'en' ? 'Complete' : 'إكمال'}</span>
+                        </button>
+                    `);
+                    break;
+                    
+                case 'acknowledged':
+                    buttons.push(`
+                        <button class="btn btn-request-action btn-complete" onclick="updateRequestStatus('${request.id}', 'completed')">
+                            <i class="bi bi-check-circle"></i>
+                            <span data-en="Complete" data-ar="إكمال">${currentLanguage === 'en' ? 'Complete' : 'إكمال'}</span>
+                        </button>
+                    `);
+                    break;
+                    
+                case 'in_progress':
+                    buttons.push(`
+                        <button class="btn btn-request-action btn-complete" onclick="updateRequestStatus('${request.id}', 'completed')">
+                            <i class="bi bi-check-circle"></i>
+                            <span data-en="Complete" data-ar="إكمال">${currentLanguage === 'en' ? 'Complete' : 'إكمال'}</span>
+                        </button>
+                    `);
+                    break;
+            }
+            
+            return buttons.join('');
+        }
+
+        function renderAnalytics() {
+            const container = document.getElementById('analyticsContainer');
+            
+            const analyticsCards = [
+                {
+                    label: currentLanguage === 'en' ? 'Total Orders' : 'إجمالي الطلبات',
+                    value: analytics.totalOrders || 0,
+                    change: '+12%',
+                    positive: true
+                },
+                {
+                    label: currentLanguage === 'en' ? 'Total Revenue' : 'إجمالي الإيرادات',
+                    value: Utils.formatCurrency(analytics.totalRevenue || 0),
+                    change: '+8%',
+                    positive: true
+                },
+                {
+                    label: currentLanguage === 'en' ? 'Average Order' : 'متوسط الطلب',
+                    value: Utils.formatCurrency(analytics.averageOrderValue || 0),
+                    change: '-3%',
+                    positive: false
+                },
+                {
+                    label: currentLanguage === 'en' ? 'Active Tables' : 'الطاولات النشطة',
+                    value: analytics.activeTables || 0,
+                    change: '+2',
+                    positive: true
+                },
+                {
+                    label: currentLanguage === 'en' ? 'Pending Orders' : 'الطلبات المعلقة',
+                    value: analytics.pendingOrders || 0,
+                    change: '-1',
+                    positive: true
+                },
+                {
+                    label: currentLanguage === 'en' ? 'Ready Orders' : 'الطلبات الجاهزة',
+                    value: analytics.readyOrders || 0,
+                    change: '+3',
+                    positive: false
+                }
+            ];
+
+            container.innerHTML = analyticsCards.map(card => `
+                <div class="analytics-card">
+                    <div class="analytics-value">${card.value}</div>
+                    <div class="analytics-label">${card.label}</div>
+                    <div class="analytics-change ${card.positive ? 'change-positive' : 'change-negative'}">
+                        <i class="bi bi-${card.positive ? 'arrow-up' : 'arrow-down'}"></i>
+                        ${card.change}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Action handlers
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                const completedAt = newStatus === 'served' ? new Date().toISOString() : null;
+                await supabaseClient.updateOrderStatus(orderId, newStatus, completedAt);
+                
+                // Update local data
+                const order = orders.find(o => o.id === orderId);
+                if (order) {
+                    order.status = newStatus;
+                    if (completedAt) order.completed_at = completedAt;
+                }
+                
+                // Re-render orders
+                renderOrders();
+                
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? `Order status updated to ${newStatus}` 
+                        : `تم تحديث حالة الطلب إلى ${Utils.getLocalizedText(APP_CONFIG.orderStatuses[newStatus])}`,
+                    'success'
+                );
+
+                // Play sound for status changes
+                if (soundsEnabled) {
+                    Utils.playSound('orderUpdate');
+                }
+                
+            } catch (error) {
+                console.error('Failed to update order status:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? 'Failed to update order status' 
+                        : 'فشل في تحديث حالة الطلب',
+                    'error'
+                );
+            }
+        }
+
+        async function updateRequestStatus(requestId, newStatus) {
+            try {
+                await supabaseClient.updateQuickActionRequestStatus(requestId, newStatus);
+                
+                // Update local data
+                const request = quickActionRequests.find(r => r.id === requestId);
+                if (request) {
+                    request.status = newStatus;
+                    if (newStatus === 'completed') {
+                        // Remove from active requests
+                        quickActionRequests = quickActionRequests.filter(r => r.id !== requestId);
+                    }
+                }
+                
+                // Re-render requests
+                renderQuickActionRequests();
+                
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? `Request ${newStatus}` 
+                        : `تم ${newStatus === 'acknowledged' ? 'استلام' : 'إكمال'} الطلب`,
+                    'success'
+                );
+
+                // Play sound for request completion
+                if (soundsEnabled && newStatus === 'completed') {
+                    Utils.playSound('notification');
+                }
+                
+            } catch (error) {
+                console.error('Failed to update request status:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? 'Failed to update request status' 
+                        : 'فشل في تحديث حالة الطلب',
+                    'error'
+                );
+            }
+        }
+
+        function selectTable(tableId) {
+            const table = tables.find(t => t.id === tableId);
+            if (!table) return;
+            
+            // TODO: Implement table details modal or navigation
+            Utils.showToast(
+                currentLanguage === 'en' 
+                    ? `Table ${table.table_number} selected` 
+                    : `تم اختيار طاولة ${table.table_number}`,
+                'info'
+            );
+        }
+
+        // Real-time subscriptions
+        function setupRealTimeSubscriptions() {
+            // Subscribe to all orders
+            const ordersSubscription = supabaseClient.subscribeToAllOrders((payload) => {
+                handleOrderUpdate(payload);
+            });
+            subscriptions.push(ordersSubscription);
+
+            // Subscribe to all quick action requests
+            const requestsSubscription = supabaseClient.subscribeToAllQuickActionRequests((payload) => {
+                handleRequestUpdate(payload);
+            });
+            subscriptions.push(requestsSubscription);
+        }
+
+        function handleOrderUpdate(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+            
+            switch (eventType) {
+                case 'INSERT':
+                    // New order received
+                    orders.unshift(newRecord);
+                    renderOrders();
+                    updateHeaderStats();
+                    
+                    // Play sound alert
+                    if (soundsEnabled) {
+                        Utils.playSound('newOrder');
+                    }
+                    
+                    // Show notification
+                    Utils.showToast(
+                        currentLanguage === 'en' 
+                            ? `New order #${newRecord.order_number} received!` 
+                            : `طلب جديد #${newRecord.order_number} تم استلامه!`,
+                        'info'
+                    );
+                    
+                    // Highlight new order
+                    setTimeout(() => {
+                        const orderElement = document.querySelector(`[data-order-id="${newRecord.id}"]`);
+                        if (orderElement) {
+                            orderElement.classList.add('new-item');
+                        }
+                    }, 100);
+                    break;
+                    
+                case 'UPDATE':
+                    // Order status updated
+                    const orderIndex = orders.findIndex(o => o.id === newRecord.id);
+                    if (orderIndex !== -1) {
+                        orders[orderIndex] = newRecord;
+                        renderOrders();
+                        updateHeaderStats();
+                    }
+                    break;
+                    
+                case 'DELETE':
+                    // Order deleted (unlikely in this system)
+                    orders = orders.filter(o => o.id !== oldRecord.id);
+                    renderOrders();
+                    updateHeaderStats();
+                    break;
+            }
+        }
+
+        function handleRequestUpdate(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+            
+            switch (eventType) {
+                case 'INSERT':
+                    // New request received
+                    quickActionRequests.unshift(newRecord);
+                    renderQuickActionRequests();
+                    
+                    // Play sound alert
+                    if (soundsEnabled) {
+                        Utils.playSound('quickAction');
+                    }
+                    
+                    // Show notification
+                    Utils.showToast(
+                        currentLanguage === 'en' 
+                            ? `New service request from Table ${newRecord.restaurant_tables?.table_number}` 
+                            : `طلب خدمة جديد من طاولة ${newRecord.restaurant_tables?.table_number}`,
+                        'warning'
+                    );
+                    
+                    // Highlight new request
+                    setTimeout(() => {
+                        const requestElement = document.querySelector(`[data-request-id="${newRecord.id}"]`);
+                        if (requestElement) {
+                            requestElement.classList.add('new-item');
+                        }
+                    }, 100);
+                    break;
+                    
+                case 'UPDATE':
+                    // Request status updated
+                    const requestIndex = quickActionRequests.findIndex(r => r.id === newRecord.id);
+                    if (requestIndex !== -1) {
+                        if (newRecord.status === 'completed') {
+                            // Remove completed requests
+                            quickActionRequests.splice(requestIndex, 1);
+                        } else {
+                            quickActionRequests[requestIndex] = newRecord;
+                        }
+                        renderQuickActionRequests();
+                    }
+                    break;
+                    
+                case 'DELETE':
+                    // Request deleted
+                    quickActionRequests = quickActionRequests.filter(r => r.id !== oldRecord.id);
+                    renderQuickActionRequests();
+                    break;
+            }
+        }
+
+        // Utility functions
+        function updateHeaderStats() {
+            document.getElementById('todayOrders').textContent = analytics.totalOrders || 0;
+            document.getElementById('todayRevenue').textContent = Utils.formatCurrency(analytics.totalRevenue || 0);
+            document.getElementById('activeTables').textContent = analytics.activeTables || 0;
+        }
+
+        function setupPeriodicUpdates() {
+            // Refresh analytics every 5 minutes
+            setInterval(async () => {
+                await loadAnalytics();
+                renderAnalytics();
+                updateHeaderStats();
+            }, 5 * 60 * 1000);
+
+            // Refresh tables every 2 minutes
+            setInterval(async () => {
+                await loadTables();
+                renderTables();
+            }, 2 * 60 * 1000);
+        }
+
+        async function refreshData() {
+            const refreshBtn = document.querySelector('[onclick="refreshData()"]');
+            const originalIcon = refreshBtn.querySelector('i').className;
+            
+            refreshBtn.querySelector('i').className = 'bi bi-arrow-clockwise';
+            refreshBtn.querySelector('i').style.animation = 'spin 1s linear infinite';
+            
+            try {
+                await loadInitialData();
+                Utils.showToast(
+                    currentLanguage === 'en' ? 'Data refreshed successfully' : 'تم تحديث البيانات بنجاح',
+                    'success'
+                );
+            } catch (error) {
+                Utils.showToast(
+                    currentLanguage === 'en' ? 'Failed to refresh data' : 'فشل في تحديث البيانات',
+                    'error'
+                );
+            } finally {
+                refreshBtn.querySelector('i').className = originalIcon;
+                refreshBtn.querySelector('i').style.animation = '';
+            }
+        }
+
+        function toggleSounds() {
+            soundsEnabled = !soundsEnabled;
+            localStorage.setItem('soundsEnabled', soundsEnabled.toString());
+            updateSoundToggle();
+            
+            Utils.showToast(
+                currentLanguage === 'en' 
+                    ? `Sound alerts ${soundsEnabled ? 'enabled' : 'disabled'}` 
+                    : `تنبيهات الصوت ${soundsEnabled ? 'مفعلة' : 'معطلة'}`,
+                'info'
+            );
+        }
+
+        function updateSoundToggle() {
+            const soundToggle = document.getElementById('soundToggle');
+            const icon = soundToggle.querySelector('i');
+            icon.className = soundsEnabled ? 'bi bi-volume-up' : 'bi bi-volume-mute';
+        }
+
+        function showLoading() {
+            const containers = ['ordersContainer', 'tablesContainer', 'requestsContainer'];
+            containers.forEach(containerId => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span data-en="Loading..." data-ar="جاري التحميل...">${currentLanguage === 'en' ? 'Loading...' : 'جاري التحميل...'}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function hideLoading() {
+            // Loading will be replaced by actual content
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            subscriptions.forEach(subscription => {
+                if (subscription && subscription.unsubscribe) {
+                    subscription.unsubscribe();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

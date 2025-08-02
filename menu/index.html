@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO Restaurant - Customer Menu</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #dc2626;
+            --secondary-color: #059669;
+            --accent-color: #f59e0b;
+            --neutral-color: #374151;
+            --background-color: #f9fafb;
+            --surface-color: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+            padding-top: 80px;
+            padding-bottom: 100px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #b91c1c 100%);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-content {
+            padding: 1rem 0;
+        }
+
+        .table-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .table-number {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+        }
+
+        .session-info {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-header {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-header:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        /* Categories */
+        .categories-section {
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 80px;
+            z-index: 999;
+        }
+
+        .categories-nav {
+            padding: 1rem 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .categories-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-btn {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            margin-right: 0.5rem;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Menu Items */
+        .menu-section {
+            padding: 2rem 0;
+        }
+
+        .menu-item {
+            background: var(--surface-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .menu-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .menu-item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        }
+
+        .menu-item-content {
+            padding: 1.5rem;
+        }
+
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .menu-item-badges {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+
+        .badge-dietary {
+            background: var(--secondary-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .badge-spice {
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .menu-item-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .menu-item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .prep-time {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .calories {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .menu-item-prices {
+            margin-bottom: 1rem;
+        }
+
+        .price-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .price-option:hover,
+        .price-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(220, 38, 38, 0.05);
+        }
+
+        .price-option.selected {
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .price-size {
+            font-weight: 500;
+        }
+
+        .price-amount {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .promotional-price {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+        }
+
+        .menu-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-quantity {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--surface-color);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-quantity:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .quantity-display {
+            min-width: 2rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .btn-add-to-cart {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-add-to-cart:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        .btn-add-to-cart:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Cart */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--surface-color);
+            box-shadow: var(--shadow-lg);
+            transition: right 0.3s ease;
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cart-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .cart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .cart-content {
+            padding: 1.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            background: var(--background-color);
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-item-size {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cart-item-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .cart-summary {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-total {
+            font-weight: 600;
+            font-size: 1.125rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .cart-actions {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-checkout {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn-checkout:hover {
+            background: #047857;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem;
+            z-index: 999;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .quick-action-btn {
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .quick-action-icon {
+            font-size: 1.25rem;
+        }
+
+        /* Cart Button */
+        .cart-button {
+            position: fixed;
+            bottom: 120px;
+            right: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            box-shadow: var(--shadow-lg);
+            z-index: 998;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .cart-button:hover {
+            background: #b91c1c;
+            transform: scale(1.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .menu-item-image {
+                height: 150px;
+            }
+
+            .menu-item-content {
+                padding: 1rem;
+            }
+
+            .menu-item-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .quantity-controls {
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="table-info">
+                            <div class="table-number" id="tableNumber">
+                                <span data-en="Table" data-ar="طاولة">طاولة</span> #--
+                            </div>
+                            <div class="session-info">
+                                <div id="sessionInfo" data-en="Loading..." data-ar="جاري التحميل...">جاري التحميل...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="header-actions">
+                            <button class="btn btn-header" onclick="toggleLanguage()" title="تغيير اللغة">
+                                <i class="bi bi-translate"></i>
+                            </button>
+                            <button class="btn btn-header" onclick="showMyOrders()" title="طلباتي">
+                                <i class="bi bi-receipt"></i>
+                            </button>
+                            <button class="btn btn-header" onclick="endSession()" title="إنهاء الجلسة">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Navigation -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="categories-nav">
+                <div class="d-flex" id="categoriesContainer">
+                    <!-- Categories will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Items -->
+    <main class="menu-section">
+        <div class="container">
+            <div id="menuContainer">
+                <!-- Menu items will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="cart-title" data-en="Your Order" data-ar="طلبك">طلبك</h3>
+                <button class="btn btn-header" onclick="closeCart()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="cart-content" id="cartContent">
+            <!-- Cart items will be loaded here -->
+        </div>
+        
+        <div class="cart-actions">
+            <button class="btn btn-checkout" onclick="checkout()" id="checkoutBtn">
+                <span data-en="Place Order" data-ar="تأكيد الطلب">تأكيد الطلب</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Button -->
+    <button class="cart-button" onclick="openCart()" id="cartButton">
+        <i class="bi bi-bag-fill"></i>
+        <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <div class="container">
+            <div class="quick-actions-grid" id="quickActionsContainer">
+                <!-- Quick actions will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Configuration -->
+    <script src="../config.js"></script>
+    
+    <!-- Supabase Client -->
+    <script src="../supabase/client.js"></script>
+
+    <script>
+        // Global variables
+        let currentLanguage = Utils.getCurrentLanguage();
+        let customerSession = null;
+        let tableData = null;
+        let categories = [];
+        let menuItems = [];
+        let quickActions = [];
+        let cart = [];
+        let currentCategory = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateLanguage();
+            await initializeCustomerSession();
+            await loadData();
+            setupEventListeners();
+        });
+
+        // Language management
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[data-en][data-ar]');
+            elements.forEach(element => {
+                const text = currentLanguage === 'en' ? element.dataset.en : element.dataset.ar;
+                element.textContent = text;
+            });
+            
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLanguage;
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
+            Utils.setLanguage(currentLanguage);
+            updateLanguage();
+            renderCategories();
+            renderMenuItems();
+            renderQuickActions();
+        }
+
+        // Session management
+        async function initializeCustomerSession() {
+            try {
+                const urlParams = Utils.getUrlParams();
+                const tableNumber = urlParams.table;
+                
+                if (!tableNumber) {
+                    throw new Error('Table number not provided');
+                }
+
+                // Get table data
+                tableData = await supabaseClient.getTableByNumber(tableNumber);
+                
+                // Check for existing session
+                let sessionToken = localStorage.getItem('customerSessionToken');
+                
+                if (sessionToken) {
+                    try {
+                        customerSession = await supabaseClient.getCustomerSession(sessionToken);
+                        
+                        // Verify session is for the correct table
+                        if (customerSession.table_id !== tableData.id) {
+                            throw new Error('Session table mismatch');
+                        }
+                    } catch (error) {
+                        console.log('Existing session invalid, creating new one');
+                        sessionToken = null;
+                    }
+                }
+
+                // Create new session if needed
+                if (!sessionToken || !customerSession) {
+                    customerSession = await supabaseClient.createCustomerSession(tableData.id);
+                    localStorage.setItem('customerSessionToken', customerSession.session_token);
+                }
+
+                // Update table status to occupied
+                await supabaseClient.updateTableStatus(tableData.id, 'occupied');
+
+                // Update UI
+                updateSessionInfo();
+                
+            } catch (error) {
+                console.error('Failed to initialize session:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? 'Failed to initialize session. Please try again.' 
+                        : 'فشل في تهيئة الجلسة. يرجى المحاولة مرة أخرى.',
+                    'error'
+                );
+            }
+        }
+
+        function updateSessionInfo() {
+            if (tableData) {
+                document.getElementById('tableNumber').innerHTML = `
+                    <span data-en="Table" data-ar="طاولة">${currentLanguage === 'en' ? 'Table' : 'طاولة'}</span> #${tableData.table_number}
+                `;
+            }
+
+            if (customerSession) {
+                const sessionTime = Utils.formatDateTime(customerSession.joined_at, { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                document.getElementById('sessionInfo').textContent = 
+                    currentLanguage === 'en' 
+                        ? `Session started at ${sessionTime}`
+                        : `بدأت الجلسة في ${sessionTime}`;
+            }
+        }
+
+        // Data loading
+        async function loadData() {
+            try {
+                showLoading();
+                
+                // Load all data in parallel
+                const [categoriesData, quickActionsData] = await Promise.all([
+                    supabaseClient.getCategories(),
+                    supabaseClient.getQuickActions()
+                ]);
+
+                categories = categoriesData;
+                quickActions = quickActionsData;
+
+                // Load menu items for first category
+                if (categories.length > 0) {
+                    currentCategory = categories[0].id;
+                    await loadMenuItems(currentCategory);
+                }
+
+                // Render UI
+                renderCategories();
+                renderQuickActions();
+                renderMenuItems();
+                
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? 'Failed to load menu data. Please refresh the page.' 
+                        : 'فشل في تحميل بيانات القائمة. يرجى تحديث الصفحة.',
+                    'error'
+                );
+                hideLoading();
+            }
+        }
+
+        async function loadMenuItems(categoryId) {
+            try {
+                const items = await supabaseClient.getMenuItemsByCategory(categoryId);
+                menuItems = items;
+                renderMenuItems();
+            } catch (error) {
+                console.error('Failed to load menu items:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? 'Failed to load menu items.' 
+                        : 'فشل في تحميل عناصر القائمة.',
+                    'error'
+                );
+            }
+        }
+
+        // Rendering functions
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = categories.map(category => `
+                <button class="btn category-btn ${category.id === currentCategory ? 'active' : ''}" 
+                        onclick="selectCategory('${category.id}')">
+                    ${Utils.getLocalizedText(category)}
+                </button>
+            `).join('');
+        }
+
+        function renderMenuItems() {
+            const container = document.getElementById('menuContainer');
+            
+            if (menuItems.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <h3 class="mt-3" data-en="No items available" data-ar="لا توجد عناصر متاحة">
+                            ${currentLanguage === 'en' ? 'No items available' : 'لا توجد عناصر متاحة'}
+                        </h3>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = menuItems.map(item => {
+                const defaultPrice = item.item_prices.find(p => p.is_default) || item.item_prices[0];
+                const cartItem = cart.find(c => c.itemId === item.id);
+                const quantity = cartItem ? cartItem.quantity : 0;
+
+                return `
+                    <div class="menu-item fade-in" data-item-id="${item.id}">
+                        <img src="${item.image_url || '../assets/images/placeholder.jpg'}" 
+                             alt="${Utils.getLocalizedText(item)}" 
+                             class="menu-item-image">
+                        
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h4 class="menu-item-title">${Utils.getLocalizedText(item)}</h4>
+                                <div class="menu-item-badges">
+                                    ${item.dietary_tags ? item.dietary_tags.map(tag => 
+                                        `<span class="badge-dietary">${tag}</span>`
+                                    ).join('') : ''}
+                                    ${item.spice_level > 0 ? 
+                                        `<span class="badge-spice">${'🌶️'.repeat(item.spice_level)}</span>` : ''}
+                                </div>
+                            </div>
+                            
+                            ${item.description_en || item.description_ar ? `
+                                <p class="menu-item-description">
+                                    ${currentLanguage === 'en' ? item.description_en : item.description_ar}
+                                </p>
+                            ` : ''}
+                            
+                            <div class="menu-item-meta">
+                                <div class="prep-time">
+                                    <i class="bi bi-clock"></i>
+                                    <span>${item.estimated_prep_time_minutes} ${currentLanguage === 'en' ? 'min' : 'دقيقة'}</span>
+                                </div>
+                                ${item.calories ? `
+                                    <div class="calories">
+                                        <i class="bi bi-lightning"></i>
+                                        <span>${item.calories} ${currentLanguage === 'en' ? 'cal' : 'سعرة'}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="menu-item-prices">
+                                ${item.item_prices.map(price => `
+                                    <div class="price-option ${price.id === defaultPrice.id ? 'selected' : ''}" 
+                                         onclick="selectPrice('${item.id}', '${price.id}')">
+                                        <span class="price-size">${Utils.getLocalizedText(price)}</span>
+                                        <div>
+                                            ${price.promotional_price ? `
+                                                <span class="promotional-price">${Utils.formatCurrency(price.price)}</span>
+                                                <span class="price-amount">${Utils.formatCurrency(price.promotional_price)}</span>
+                                            ` : `
+                                                <span class="price-amount">${Utils.formatCurrency(price.price)}</span>
+                                            `}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="menu-item-actions">
+                                <div class="quantity-controls">
+                                    <button class="btn btn-quantity" onclick="updateQuantity('${item.id}', ${quantity - 1})" 
+                                            ${quantity <= 0 ? 'disabled' : ''}>
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <span class="quantity-display">${quantity}</span>
+                                    <button class="btn btn-quantity" onclick="updateQuantity('${item.id}', ${quantity + 1})">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-add-to-cart" onclick="addToCart('${item.id}')" 
+                                        ${!item.is_available ? 'disabled' : ''}>
+                                    ${!item.is_available 
+                                        ? (currentLanguage === 'en' ? 'Unavailable' : 'غير متاح')
+                                        : (currentLanguage === 'en' ? 'Add to Cart' : 'أضف للسلة')
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateLanguage();
+        }
+
+        function renderQuickActions() {
+            const container = document.getElementById('quickActionsContainer');
+            container.innerHTML = quickActions.map(action => `
+                <button class="quick-action-btn" onclick="requestQuickAction('${action.id}')">
+                    <i class="quick-action-icon bi ${getQuickActionIcon(action.category)}"></i>
+                    <span>${Utils.getLocalizedText(action)}</span>
+                </button>
+            `).join('');
+        }
+
+        function getQuickActionIcon(category) {
+            const icons = {
+                service: 'bi-bell',
+                payment: 'bi-credit-card',
+                assistance: 'bi-question-circle',
+                complaint: 'bi-exclamation-triangle'
+            };
+            return icons[category] || 'bi-bell';
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartContent');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-bag display-1 text-muted"></i>
+                        <h4 class="mt-3" data-en="Your cart is empty" data-ar="سلتك فارغة">
+                            ${currentLanguage === 'en' ? 'Your cart is empty' : 'سلتك فارغة'}
+                        </h4>
+                        <p class="text-muted" data-en="Add items from the menu" data-ar="أضف عناصر من القائمة">
+                            ${currentLanguage === 'en' ? 'Add items from the menu' : 'أضف عناصر من القائمة'}
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            const cartItems = cart.map(item => {
+                const menuItem = menuItems.find(m => m.id === item.itemId);
+                const price = menuItem?.item_prices.find(p => p.id === item.priceId);
+                
+                return `
+                    <div class="cart-item">
+                        <img src="${menuItem?.image_url || '../assets/images/placeholder.jpg'}" 
+                             alt="${Utils.getLocalizedText(menuItem)}" 
+                             class="cart-item-image">
+                        
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${Utils.getLocalizedText(menuItem)}</div>
+                            <div class="cart-item-size">${Utils.getLocalizedText(price)}</div>
+                            
+                            <div class="cart-item-controls">
+                                <div class="cart-item-quantity">
+                                    <button class="btn btn-sm btn-outline-secondary" 
+                                            onclick="updateCartItemQuantity('${item.itemId}', ${item.quantity - 1})">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <span class="mx-2">${item.quantity}</span>
+                                    <button class="btn btn-sm btn-outline-secondary" 
+                                            onclick="updateCartItemQuantity('${item.itemId}', ${item.quantity + 1})">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="cart-item-price">${Utils.formatCurrency(item.totalPrice)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const totals = Utils.calculateOrderTotals(getCartSubtotal());
+            
+            const summary = `
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span data-en="Subtotal" data-ar="المجموع الفرعي">${currentLanguage === 'en' ? 'Subtotal' : 'المجموع الفرعي'}</span>
+                        <span>${Utils.formatCurrency(totals.subtotal)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span data-en="Tax" data-ar="الضريبة">${currentLanguage === 'en' ? 'Tax' : 'الضريبة'} (${APP_CONFIG.taxation.taxRate * 100}%)</span>
+                        <span>${Utils.formatCurrency(totals.taxAmount)}</span>
+                    </div>
+                    ${totals.serviceCharge > 0 ? `
+                        <div class="summary-row">
+                            <span data-en="Service Charge" data-ar="رسوم الخدمة">${currentLanguage === 'en' ? 'Service Charge' : 'رسوم الخدمة'}</span>
+                            <span>${Utils.formatCurrency(totals.serviceCharge)}</span>
+                        </div>
+                    ` : ''}
+                    <div class="summary-row summary-total">
+                        <span data-en="Total" data-ar="الإجمالي">${currentLanguage === 'en' ? 'Total' : 'الإجمالي'}</span>
+                        <span>${Utils.formatCurrency(totals.total)}</span>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = cartItems + summary;
+            updateCartBadge();
+        }
+
+        // Event handlers
+        function selectCategory(categoryId) {
+            currentCategory = categoryId;
+            renderCategories();
+            loadMenuItems(categoryId);
+        }
+
+        function selectPrice(itemId, priceId) {
+            const item = document.querySelector(`[data-item-id="${itemId}"]`);
+            const priceOptions = item.querySelectorAll('.price-option');
+            
+            priceOptions.forEach(option => option.classList.remove('selected'));
+            event.target.closest('.price-option').classList.add('selected');
+        }
+
+        function updateQuantity(itemId, newQuantity) {
+            if (newQuantity < 0) return;
+            
+            const cartItem = cart.find(item => item.itemId === itemId);
+            
+            if (newQuantity === 0) {
+                cart = cart.filter(item => item.itemId !== itemId);
+            } else if (cartItem) {
+                cartItem.quantity = newQuantity;
+                cartItem.totalPrice = cartItem.unitPrice * newQuantity;
+            }
+            
+            renderMenuItems();
+            renderCart();
+        }
+
+        function addToCart(itemId) {
+            const menuItem = menuItems.find(item => item.id === itemId);
+            const selectedPriceElement = document.querySelector(`[data-item-id="${itemId}"] .price-option.selected`);
+            
+            if (!selectedPriceElement) {
+                Utils.showToast(
+                    currentLanguage === 'en' ? 'Please select a size' : 'يرجى اختيار الحجم',
+                    'warning'
+                );
+                return;
+            }
+
+            const priceId = selectedPriceElement.onclick.toString().match(/'([^']+)'/g)[1].replace(/'/g, '');
+            const price = menuItem.item_prices.find(p => p.id === priceId);
+            const unitPrice = price.promotional_price || price.price;
+
+            const existingItem = cart.find(item => item.itemId === itemId && item.priceId === priceId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+                existingItem.totalPrice = existingItem.unitPrice * existingItem.quantity;
+            } else {
+                cart.push({
+                    itemId,
+                    priceId,
+                    quantity: 1,
+                    unitPrice,
+                    totalPrice: unitPrice
+                });
+            }
+
+            renderMenuItems();
+            renderCart();
+            
+            Utils.showToast(
+                currentLanguage === 'en' ? 'Added to cart' : 'تم الإضافة للسلة',
+                'success'
+            );
+        }
+
+        function updateCartItemQuantity(itemId, newQuantity) {
+            if (newQuantity <= 0) {
+                cart = cart.filter(item => item.itemId !== itemId);
+            } else {
+                const cartItem = cart.find(item => item.itemId === itemId);
+                if (cartItem) {
+                    cartItem.quantity = newQuantity;
+                    cartItem.totalPrice = cartItem.unitPrice * newQuantity;
+                }
+            }
+            
+            renderCart();
+            renderMenuItems();
+        }
+
+        function getCartSubtotal() {
+            return cart.reduce((total, item) => total + item.totalPrice, 0);
+        }
+
+        function updateCartBadge() {
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            const badge = document.getElementById('cartBadge');
+            badge.textContent = totalItems;
+            badge.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+
+        // Cart management
+        function openCart() {
+            document.getElementById('cartOverlay').classList.add('open');
+            document.getElementById('cartSidebar').classList.add('open');
+            renderCart();
+        }
+
+        function closeCart() {
+            document.getElementById('cartOverlay').classList.remove('open');
+            document.getElementById('cartSidebar').classList.remove('open');
+        }
+
+        async function checkout() {
+            if (cart.length === 0) {
+                Utils.showToast(
+                    currentLanguage === 'en' ? 'Your cart is empty' : 'سلتك فارغة',
+                    'warning'
+                );
+                return;
+            }
+
+            try {
+                const checkoutBtn = document.getElementById('checkoutBtn');
+                checkoutBtn.disabled = true;
+                checkoutBtn.innerHTML = `
+                    <div class="spinner"></div>
+                    <span data-en="Processing..." data-ar="جاري المعالجة...">${currentLanguage === 'en' ? 'Processing...' : 'جاري المعالجة...'}</span>
+                `;
+
+                // Create order
+                const order = await supabaseClient.createOrder({
+                    tableId: tableData.id,
+                    customerSessionId: customerSession.id,
+                    orderType: 'dine_in'
+                });
+
+                // Add order items
+                const orderItems = cart.map(item => ({
+                    itemId: item.itemId,
+                    priceId: item.priceId,
+                    quantity: item.quantity,
+                    unitPrice: item.unitPrice,
+                    totalPrice: item.totalPrice
+                }));
+
+                await supabaseClient.addOrderItems(order.id, orderItems);
+
+                // Clear cart
+                cart = [];
+                localStorage.removeItem('cart');
+                
+                // Close cart and update UI
+                closeCart();
+                renderMenuItems();
+                
+                Utils.showToast(
+                    currentLanguage === 'en' ? 'Order placed successfully!' : 'تم تقديم الطلب بنجاح!',
+                    'success'
+                );
+
+                // Play sound
+                Utils.playSound('newOrder');
+
+            } catch (error) {
+                console.error('Checkout failed:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' ? 'Failed to place order. Please try again.' : 'فشل في تقديم الطلب. يرجى المحاولة مرة أخرى.',
+                    'error'
+                );
+            } finally {
+                const checkoutBtn = document.getElementById('checkoutBtn');
+                checkoutBtn.disabled = false;
+                checkoutBtn.innerHTML = `
+                    <span data-en="Place Order" data-ar="تأكيد الطلب">${currentLanguage === 'en' ? 'Place Order' : 'تأكيد الطلب'}</span>
+                `;
+            }
+        }
+
+        // Quick actions
+        async function requestQuickAction(actionId) {
+            try {
+                await supabaseClient.createQuickActionRequest({
+                    table_id: tableData.id,
+                    customer_session_id: customerSession.id,
+                    action_id: actionId
+                });
+
+                const action = quickActions.find(a => a.id === actionId);
+                Utils.showToast(
+                    currentLanguage === 'en' 
+                        ? `${action.action_en} request sent`
+                        : `تم إرسال طلب ${action.action_ar}`,
+                    'success'
+                );
+
+                Utils.playSound('quickAction');
+
+            } catch (error) {
+                console.error('Quick action request failed:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' ? 'Failed to send request' : 'فشل في إرسال الطلب',
+                    'error'
+                );
+            }
+        }
+
+        // Session management
+        function showMyOrders() {
+            // TODO: Implement orders history modal
+            Utils.showToast(
+                currentLanguage === 'en' ? 'Orders history coming soon' : 'سجل الطلبات قريباً',
+                'info'
+            );
+        }
+
+        async function endSession() {
+            if (cart.length > 0) {
+                const confirmed = confirm(
+                    currentLanguage === 'en' 
+                        ? 'You have items in your cart. Are you sure you want to end the session?'
+                        : 'لديك عناصر في السلة. هل أنت متأكد من إنهاء الجلسة؟'
+                );
+                
+                if (!confirmed) return;
+            }
+
+            try {
+                await supabaseClient.endCustomerSession(customerSession.id);
+                localStorage.removeItem('customerSessionToken');
+                localStorage.removeItem('cart');
+                
+                Utils.showToast(
+                    currentLanguage === 'en' ? 'Session ended successfully' : 'تم إنهاء الجلسة بنجاح',
+                    'success'
+                );
+
+                // Redirect to main page
+                setTimeout(() => {
+                    window.location.href = '../';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Failed to end session:', error);
+                Utils.showToast(
+                    currentLanguage === 'en' ? 'Failed to end session' : 'فشل في إنهاء الجلسة',
+                    'error'
+                );
+            }
+        }
+
+        // Utility functions
+        function showLoading() {
+            document.getElementById('menuContainer').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span data-en="Loading menu..." data-ar="جاري تحميل القائمة...">${currentLanguage === 'en' ? 'Loading menu...' : 'جاري تحميل القائمة...'}</span>
+                </div>
+            `;
+        }
+
+        function hideLoading() {
+            // Loading will be replaced by menu items
+        }
+
+        function setupEventListeners() {
+            // Save cart to localStorage on changes
+            const originalPush = cart.push;
+            cart.push = function(...items) {
+                const result = originalPush.apply(this, items);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                return result;
+            };
+
+            // Load cart from localStorage
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                try {
+                    cart = JSON.parse(savedCart);
+                    updateCartBadge();
+                } catch (error) {
+                    console.error('Failed to load saved cart:', error);
+                }
+            }
+
+            // Handle back button
+            window.addEventListener('popstate', function() {
+                if (document.getElementById('cartSidebar').classList.contains('open')) {
+                    closeCart();
+                }
+            });
+
+            // Handle escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeCart();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
